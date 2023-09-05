@@ -1,17 +1,22 @@
 package com.hms.models;
 
-import java.util.Date;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.*;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -42,6 +47,18 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private String role;
+    
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Appointment> patientAppointments;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<Appointment> doctorAppointments;
 
     @CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)
@@ -54,23 +71,25 @@ public class User {
     private Date updatedAt;
 
     public User() {
-        
+    	super();
     }
-
+    
     public User(long userId, String username, String mobile, String address, String dp, String password, String role,
-            Date createdAt, Date updatedAt) {
-        this.userId = userId;
-        this.username = username;
-        this.mobile = mobile;
-        this.address = address;
-        this.dp = dp;
-        this.password = password;
-        this.role = role;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+			Department department, List<Appointment> patientAppointments, List<Appointment> doctorAppointments) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.mobile = mobile;
+		this.address = address;
+		this.dp = dp;
+		this.password = password;
+		this.role = role;
+		this.department = department;
+		this.patientAppointments = patientAppointments;
+		this.doctorAppointments = doctorAppointments;
+	}
 
-    public long getUserId() {
+	public long getUserId() {
         return userId;
     }
 
@@ -142,12 +161,12 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "User [userId=" + userId + ", username=" + username + ", mobile=" + mobile + ", address=" + address
-                + ", dp=" + dp + ", password=" + password + ", role=" + role + ", createdAt=" + createdAt
-                + ", updatedAt=" + updatedAt + "]";
-    }
-    
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", username=" + username + ", mobile=" + mobile + ", address=" + address
+				+ ", dp=" + dp + ", password=" + password + ", role=" + role + ", department=" + department
+				+ ", patientAppointments=" + patientAppointments + ", doctorAppointments=" + doctorAppointments
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+	}
     
 } 

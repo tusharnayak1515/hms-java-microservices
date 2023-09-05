@@ -35,7 +35,7 @@ public class AuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
     	String requestUrl = request.getRequestURL().toString();
         
-        if (requestUrl.endsWith("/api/customer/register") || requestUrl.endsWith("/api/customer/login")) {
+        if (requestUrl.endsWith("/register") || requestUrl.endsWith("/login")) {
             filterChain.doFilter(request, response);
             return;
         }
