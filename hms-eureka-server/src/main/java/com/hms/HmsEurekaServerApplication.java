@@ -2,14 +2,14 @@ package com.hms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-@EnableDiscoveryClient
+@EnableEurekaServer
 @SpringBootApplication
-public class AdminServiceApplication {
+public class HmsEurekaServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AdminServiceApplication.class, args);
+		SpringApplication.run(HmsEurekaServerApplication.class, args);
 	}
 
 }
