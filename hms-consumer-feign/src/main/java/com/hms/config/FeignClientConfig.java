@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import feign.Feign;
 import feign.Logger;
+import feign.Retryer;
 import feign.codec.ErrorDecoder;
 
 @Configuration
@@ -17,11 +18,16 @@ public class FeignClientConfig {
 
     @Bean
     public Logger.Level feignLoggerLevel() {
-        return Logger.Level.FULL; // Set Feign logger level to FULL for detailed logging
+        return Logger.Level.FULL;
     }
 
     @Bean
     public Feign.Builder feignBuilder() {
         return Feign.builder();
+    }
+
+    @Bean
+    public Retryer retryer() {
+        return new CustomRetryer();
     }
 }

@@ -319,7 +319,8 @@ public class AdminConsumerRestController {
 			log.debug("JWT Token: " + token);
 			return adminServiceProxy.getDepartmentById(id, token);
 		} catch (Exception e) {
-			log.debug("Error: In get department by id: " + e.toString());
+			e.printStackTrace();
+			log.debug("Error: In get department by id: " + e);
 			JwtResponse myResponse = new JwtResponse();
 			myResponse.setSuccess(false);
 			myResponse.setError(e.toString());
