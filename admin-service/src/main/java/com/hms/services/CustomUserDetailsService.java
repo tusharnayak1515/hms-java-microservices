@@ -54,6 +54,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public User findByMobile(String mobile) {
 		return this.userRepo.findByMobile(mobile);
 	}
+	
+	public User findByUsername(String username) {
+		return this.userRepo.findByUsername(username);
+	}
 
 	public User findById(long id) {
 		Optional<User> optionalUser = this.userRepo.findById(id);

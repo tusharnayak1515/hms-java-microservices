@@ -2,6 +2,12 @@ package com.hms.config;
 
 import java.io.IOException;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,14 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.hms.services.CustomUserDetailsService;
 import com.hms.utils.JwtUtil;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-
 
 @Component
 public class AuthFilter extends OncePerRequestFilter {
@@ -41,20 +39,24 @@ public class AuthFilter extends OncePerRequestFilter {
         }
 
     	
-        Cookie[] jwtCookies = request.getCookies();
+//        Cookie[] jwtCookies = request.getCookies();
         String token = null;
-        if (jwtCookies != null) {
-            for (Cookie cookie : jwtCookies) {
-                if (cookie.getName().equals("authorization")) {
-//                     cookie.setValue(null);
-//                     cookie.setMaxAge(0);
-//                     cookie.setPath("/");
-//                     response.addCookie(cookie);
-                    token = cookie.getValue();
-                    // System.out.println(token);
-                }
-            }
+        if(request.getHeader("Authorization") != null) {
+        	token = request.getHeader("Authorization");
         }
+//        System.out.println("cookies: "+jwtCookies);
+//        if (jwtCookies != null) {
+//            for (Cookie cookie : jwtCookies) {
+//                if (cookie.getName().equalsIgnoreCase("authorization")) {
+////                     cookie.setValue(null);
+////                     cookie.setMaxAge(0);
+////                     cookie.setPath("/");
+////                     response.addCookie(cookie);
+//                    token = cookie.getValue();
+//                    // System.out.println(token);
+//                }
+//            }
+//        }
         String email = null;
 
         if (token != null) {
