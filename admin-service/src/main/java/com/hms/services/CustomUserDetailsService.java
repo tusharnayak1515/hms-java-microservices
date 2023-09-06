@@ -70,6 +70,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         	user.setUsername(userDto.getUsername());
         	user.setMobile(userDto.getMobile());
         	user.setAddress(userDto.getAddress());
+        	user.setDp(userDto.getDp());
         	user = this.userRepo.save(user);
         }
         return user;

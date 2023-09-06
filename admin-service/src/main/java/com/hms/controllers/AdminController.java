@@ -208,6 +208,7 @@ public class AdminController {
 			user.setUsername(request.getUsername());
 			user.setMobile(request.getMobile());
 			user.setAddress(request.getAddress());
+			user.setDp(request.getDp());
 			
 			user = customUserDetailsService.update(user);
 			
@@ -257,6 +258,13 @@ public class AdminController {
 				DepartmentResponse myResponse = new DepartmentResponse();
 				myResponse.setSuccess(false);
 				myResponse.setError("Not Allowed");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			}
+			
+			if(department.getDepartmentName() == null || (department.getDepartmentName() != null && department.getDepartmentName().replaceAll("\\s+", "").length() == 0)) { 
+				DepartmentResponse myResponse = new DepartmentResponse();
+				myResponse.setSuccess(false);
+				myResponse.setError("Department name cannot be empty");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
@@ -328,22 +336,22 @@ public class AdminController {
 		}
 	}
 	
-//	@GetMapping("/department/{name}")
-//	public ResponseEntity<?> getDepartmentsByName(@PathVariable String name) throws Exception {
-//		try {
-//			Department department = departmentService.findByName(name);
-//			DepartmentResponse myResponse = new DepartmentResponse();
-//			myResponse.setSuccess(true);
-//			myResponse.setDepartment(department);
-//			log.debug("In admin-service get department by name with department data: "+department);
-//			return ResponseEntity.status(HttpStatus.OK).body(myResponse);			
-//		} catch (Exception e) {
-//			JwtResponse myResponse = new JwtResponse();
-//			myResponse.setSuccess(false);
-//			myResponse.setError(e.toString());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
-//		}
-//	}
+	@GetMapping("/department/name/{name}")
+	public ResponseEntity<?> getDepartmentsByName(@PathVariable String name) throws Exception {
+		try {
+			Department department = departmentService.findByName(name);
+			DepartmentResponse myResponse = new DepartmentResponse();
+			myResponse.setSuccess(true);
+			myResponse.setDepartment(department);
+			log.debug("In admin-service get department by name with department data: "+department);
+			return ResponseEntity.status(HttpStatus.OK).body(myResponse);			
+		} catch (Exception e) {
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
 	
 	@PutMapping("/department")
 	public ResponseEntity<?> updateDepartment(@RequestBody Department department) throws Exception {
@@ -359,6 +367,16 @@ public class AdminController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
+			department = departmentService.findById(department.getDepartmentId());
+			if(department == null) {
+				DepartmentResponse myResponse = new DepartmentResponse();
+				myResponse.setSuccess(false);
+				myResponse.setError("Department not found");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(myResponse);
+			}
+			
+			System.out.println("department.getDepartmentName(): "+department.getDepartmentName());
+						
 			if(department.getDepartmentName() == null || (department.getDepartmentName() != null && department.getDepartmentName().replaceAll("\\s+", "").length() == 0)) {
 				DepartmentResponse myResponse = new DepartmentResponse();
 				myResponse.setSuccess(false);
@@ -368,10 +386,12 @@ public class AdminController {
 			
 			Department isDepartent = departmentService.findByName(department.getDepartmentName());
 			if(isDepartent != null) {
-				DepartmentResponse myResponse = new DepartmentResponse();
-				myResponse.setSuccess(false);
-				myResponse.setError("Department exists with the same name");
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+				if(isDepartent.getDepartmentId() != department.getDepartmentId()) {
+					DepartmentResponse myResponse = new DepartmentResponse();
+					myResponse.setSuccess(false);
+					myResponse.setError("Department exists with the same name");
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);					
+				}
 			}
 			
 			department = departmentService.updateDepartment(department);
@@ -400,6 +420,14 @@ public class AdminController {
 				myResponse.setSuccess(false);
 				myResponse.setError("Not Allowed");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			}
+			
+			Department department = departmentService.findById(id);
+			if(department == null) {
+				DepartmentResponse myResponse = new DepartmentResponse();
+				myResponse.setSuccess(false);
+				myResponse.setError("Department not found");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(myResponse);
 			}
 			
 			departmentService.deleteDepartment(id);

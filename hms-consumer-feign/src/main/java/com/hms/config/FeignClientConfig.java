@@ -1,6 +1,5 @@
 package com.hms.config;
 
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +8,6 @@ import feign.Logger;
 import feign.codec.ErrorDecoder;
 
 @Configuration
-@EnableFeignClients
 public class FeignClientConfig {
 
     @Bean

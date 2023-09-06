@@ -36,37 +36,37 @@ public interface AdminServiceProxy {
 	@PutMapping(value = "/update-profile")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "updateProfileFallback")
-	public ResponseEntity<?> updateProfile(@RequestBody User request) ;
+	public ResponseEntity<JwtResponse> updateProfile(@RequestBody User request, @RequestHeader("Authorization") String token) ;
 
 	@PostMapping(value = "/department")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "createDepartmentFallback")
-	public ResponseEntity<?> createDepartment(@RequestBody Department department, @RequestHeader("Authorization") String token) ;
+	public ResponseEntity<DepartmentResponse> createDepartment(@RequestBody Department department, @RequestHeader("Authorization") String token) ;
 
 	@GetMapping(value = "/department")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAllDepartmentsFallback")
-	public ResponseEntity<?> getAllDepartments(@RequestHeader("Authorization") String token);
+	public ResponseEntity<DepartmentResponse> getAllDepartments(@RequestHeader("Authorization") String token);
 
 	@GetMapping(value = "/department/{id}")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "getDepartmentByIdFallback")
-	public ResponseEntity<?> getDepartmentById(@PathVariable Long id, @RequestHeader("Authorization") String token) ;
+	public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable Long id, @RequestHeader("Authorization") String token) ;
 
-	// @GetMapping(value = "/department/{name}")
-	// @Retry(name = "admin-service")
-	// @CircuitBreaker(name = "admin-service", fallbackMethod = "getDepartmentsByNameFallback")
-	// public ResponseEntity<?> getDepartmentsByName(@PathVariable String name);
+	@GetMapping(value = "/department/name/{name}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getDepartmentsByNameFallback")
+	public ResponseEntity<DepartmentResponse> getDepartmentsByName(@PathVariable String name, @RequestHeader("Authorization") String token);
 
 	@PutMapping(value = "/department")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "updateDepartmentFallback")
-	public ResponseEntity<?> updateDepartment(@RequestBody Department department, @RequestHeader("Authorization") String token) ;
+	public ResponseEntity<DepartmentResponse> updateDepartment(@RequestBody Department department, @RequestHeader("Authorization") String token) ;
 
 	@DeleteMapping(value = "/department/{id}")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "deleteDepartmentFallback")
-	public ResponseEntity<?> deleteDepartment(@PathVariable Long id, @RequestHeader("Authorization") String token) ;
+	public ResponseEntity<DepartmentResponse> deleteDepartment(@PathVariable Long id, @RequestHeader("Authorization") String token) ;
 
 	// Fallback methods
 	public default ResponseEntity<?> adminRegisterFallback(User admin, Exception ex) {
@@ -78,29 +78,29 @@ public interface AdminServiceProxy {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<JwtResponse> adminLoginFallback(Throwable cause) {
-		System.out.println("yes----------");
+	public default ResponseEntity<JwtResponse> adminLoginFallback(Exception ex) {
+		System.out.println("yes----------"+ex);
 		JwtResponse myResponse = new JwtResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError("Login failed");
+		myResponse.setError(ex.toString());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> updateProfileFallback(Throwable cause) {
+	public default ResponseEntity<?> updateProfileFallback(Exception ex) {
 		JwtResponse myResponse = new JwtResponse();
 		myResponse.setSuccess(false);
 		myResponse.setError("Update profile failed");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> createDepartmentFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> createDepartmentFallback(Exception ex) {
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError("Create department failed");
+		myResponse.setError(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> getAllDepartmentsFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> getAllDepartmentsFallback(Exception ex) {
 		// System.out.println("httpRequest: "+httpRequest);
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
@@ -108,31 +108,32 @@ public interface AdminServiceProxy {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> getDepartmentByIdFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> getDepartmentByIdFallback(Exception ex) {
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
 		myResponse.setError("Get department by id failed");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> getDepartmentsByNameFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> getDepartmentsByNameFallback(Exception ex) {
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
 		myResponse.setError("Get department by name failed");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> updateDepartmentFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> updateDepartmentFallback(Exception ex) {
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError("Update department failed");
+		myResponse.setError(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
-	public default ResponseEntity<?> deleteDepartmentFallback(Throwable cause) {
+	public default ResponseEntity<DepartmentResponse> deleteDepartmentFallback(Exception ex) {
+		System.out.println("execption in delete department fallback: "+ex);
 		DepartmentResponse myResponse = new DepartmentResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError("Delete department failed");
+		myResponse.setError(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
