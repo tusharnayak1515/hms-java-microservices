@@ -60,7 +60,7 @@ public class AdminController {
 	
 	private Logger log = LoggerFactory.getLogger(AdminController.class);
 	
-	@PostMapping("/register")
+	@PostMapping(value = "/register", produces = "application/json")
 	public ResponseEntity<?> adminRegister(@RequestBody User admin) throws Exception {
 		try {
 			log.debug("In admin-service admin register with data: "+admin);

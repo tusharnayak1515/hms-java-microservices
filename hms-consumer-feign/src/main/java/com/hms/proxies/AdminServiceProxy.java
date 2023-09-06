@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.hms.config.FeignClientConfig;
 import com.hms.dto.DepartmentResponse;
 import com.hms.dto.JwtResponse;
 import com.hms.dto.LoginRequest;
@@ -19,7 +20,7 @@ import com.hms.models.User;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
-@FeignClient("admin-service")
+@FeignClient(value = "admin-service", configuration = FeignClientConfig.class)
 public interface AdminServiceProxy {
 
 	@PostMapping(value = "/register")
@@ -70,10 +71,10 @@ public interface AdminServiceProxy {
 	// Fallback methods
 	public default ResponseEntity<?> adminRegisterFallback(User admin, Exception ex) {
 		System.out.println("admin: "+admin.getMobile());
-		System.out.println("--------- error message: "+ex);
+		System.out.println("--------- error message: "+ex.toString());
 		JwtResponse myResponse = new JwtResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError("Registration failed");
+		myResponse.setError(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
