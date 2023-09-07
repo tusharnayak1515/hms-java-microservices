@@ -94,11 +94,6 @@ public interface AdminServiceProxy {
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "deleteDoctorFallback")
 	public ResponseEntity<JwtResponse> deleteDoctor(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
 
-	@PostMapping(value = "/patients")
-	@Retry(name = "admin-service")
-	@CircuitBreaker(name = "admin-service", fallbackMethod = "registerPatientFallback")
-	public ResponseEntity<JwtResponse> registerPatient(@RequestBody User patient, @RequestHeader("Authorization") String token);
-
 	@GetMapping(value = "/patients")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAllPatientsFallback")
@@ -242,14 +237,6 @@ public interface AdminServiceProxy {
 
 	public default ResponseEntity<JwtResponse> deleteDoctorFallback(Exception ex) {
 		System.out.println("exception in delete doctor fallback: "+ex);
-		JwtResponse myResponse = new JwtResponse();
-		myResponse.setSuccess(false);
-		myResponse.setError(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
-	}
-
-	public default ResponseEntity<JwtResponse> registerPatientFallback(Exception ex) {
-		System.out.println("exception in register patient fallback: "+ex);
 		JwtResponse myResponse = new JwtResponse();
 		myResponse.setSuccess(false);
 		myResponse.setError(ex.getMessage());

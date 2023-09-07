@@ -38,11 +38,9 @@ public class AppointmentService {
     }
 	
 	public Appointment updateAppointment(Appointment updatedAppointment) {
-		System.out.println("updatedAppointment: "+updatedAppointment);
 		Optional<Appointment> optionalAppointment = this.appointmentRepo.findById(updatedAppointment.getAppointmentId());
 		if (optionalAppointment.isPresent()) {
 			Appointment appointment = optionalAppointment.get();
-			appointment.setAdmitted(updatedAppointment.isAdmitted());
 			appointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
             return this.appointmentRepo.save(appointment);
         } 

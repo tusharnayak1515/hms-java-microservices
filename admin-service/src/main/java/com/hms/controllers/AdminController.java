@@ -129,13 +129,13 @@ public class AdminController {
 				JwtResponse myResponse = new JwtResponse();
 				myResponse.setSuccess(false);
 				myResponse.setError("User account is disabled");
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(myResponse);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	        } 
 			catch (BadCredentialsException e) {
 				JwtResponse myResponse = new JwtResponse();
 				myResponse.setSuccess(false);
 				myResponse.setError("Invalid username or password");
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(myResponse);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 	        
 	        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getMobile());
@@ -658,47 +658,6 @@ public class AdminController {
 	
 	//	Patients section
 	
-	@PostMapping("/patients")
-	public ResponseEntity<?> createPatient(@RequestBody User patient) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			String mobile = authentication.getName();
-			User user = this.customUserDetailsService.findByMobile(mobile);
-			
-			if(!user.getRole().equals("admin")) {
-				JwtResponse myResponse = new JwtResponse();
-	            myResponse.setSuccess(false);
-	            myResponse.setError("Not Allowed");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
-			}
-			
-			log.debug("In admin-service patient register with data: "+patient);
-			User isUser1 = customUserDetailsService.findByUsername(patient.getUsername());
-			User isUser2 = customUserDetailsService.findByMobile(patient.getMobile());
-			
-			if(isUser1 != null && isUser2 != null) {
-				JwtResponse myResponse = new JwtResponse();
-	            myResponse.setSuccess(false);
-	            myResponse.setError("User already exists");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
-			}
-			
-			patient.setRole("patient");
-			patient.setStatus("approved");
-			patient.setPassword(passwordEncoder.encode(patient.getPassword()));
-			patient = customUserDetailsService.createUser(patient);
-			log.debug("In admin-service patient register with patient data: "+patient);
-			JwtResponse myResponse = new JwtResponse();
-            myResponse.setSuccess(true);
-            return ResponseEntity.status(HttpStatus.OK).body(myResponse);
-		} catch (Exception e) {
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(false);
-			myResponse.setError(e.toString());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
-		}
-	}
-	
 	@GetMapping("/patients")
 	public ResponseEntity<?> getAllPatients() {
 		try {
@@ -927,6 +886,7 @@ public class AdminController {
 	@PutMapping("/appointments")
 	public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment) {
 		try {
+			System.out.println("appointment: "+appointment);
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String mobile = authentication.getName();
 			User user = this.customUserDetailsService.findByMobile(mobile);
@@ -943,7 +903,7 @@ public class AdminController {
 				AppointmentResponse myResponse = new AppointmentResponse();
 				myResponse.setSuccess(false);
 				myResponse.setError("Appointment not found");
-				return ResponseEntity.status(HttpStatus.OK).body(myResponse);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
 			appointment = this.appointmentService.updateAppointment(appointment);

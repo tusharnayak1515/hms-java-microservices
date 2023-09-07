@@ -229,10 +229,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -284,10 +280,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -312,10 +304,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -342,10 +330,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -371,10 +355,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -426,10 +406,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -481,10 +457,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -536,10 +508,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -592,10 +560,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -647,10 +611,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -703,10 +663,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -749,62 +705,6 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@PostMapping("/patients")
-	public ResponseEntity<?> registerPatient(@RequestBody User patient, HttpServletRequest httpRequest)
-			throws Exception {
-		try {
-			log.debug("In register patient with data: " + patient);
-			Cookie[] cookies = httpRequest.getCookies();
-			String token = null;
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
-						token = cookie.getValue();
-					}
-				}
-			}
-			log.debug("JWT Token: " + token);
-			ResponseEntity<?> responseEntity = adminServiceProxy.registerPatient(patient, token);
-			if (responseEntity.getStatusCode().is2xxSuccessful()) {
-				JwtResponse response = (JwtResponse) responseEntity.getBody();
-				return ResponseEntity.status(HttpStatus.OK).body(response);
-			} else {
-				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
-				Object errorMessage = null;
-				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
-					errorMessage = responseEntity.getBody();
-				} else {
-					errorMessage = "Unknown Error";
-				}
-
-				ObjectMapper objectMapper = new ObjectMapper();
-				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
-				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
-				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
-
-				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
-				customErrorResponse.setSuccess(false);
-				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
-				System.out.println("success: " + errorResponse1.isSuccess());
-				System.out.println("error: " + errorResponse1.getError());
-				customErrorResponse.setError(errorResponse1.getError());
-
-				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
-			}
-		} catch (FeignException e) {
-			log.debug("Error: In register patient contentUTF8: " + e.contentUTF8());
-			log.debug("Error: In register patient toString: " + e.toString());
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(false);
-			myResponse.setError(e.contentUTF8());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
-		}
-	}
-
 	@GetMapping("/patients")
 	public ResponseEntity<?> getAllPatients(HttpServletRequest httpRequest) throws Exception {
 		try {
@@ -814,10 +714,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -870,10 +766,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -925,10 +817,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -981,10 +869,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -1036,10 +920,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -1093,10 +973,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -1150,10 +1026,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
@@ -1207,10 +1079,6 @@ public class AdminConsumerRestController {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if ("authorization".equalsIgnoreCase(cookie.getName())) {
-						// cookie.setValue(null);
-						// cookie.setMaxAge(0);
-						// cookie.setPath("/");
-						// response.addCookie(cookie);
 						token = cookie.getValue();
 					}
 				}
