@@ -828,6 +828,14 @@ public class AdminController {
 			}
 			
 			List<Appointment> appointments = this.appointmentService.findAll();
+			
+			Iterator<Appointment> iterator = appointments.iterator();
+			while (iterator.hasNext()) {
+				Appointment element = iterator.next();
+                element.getDoctor().setPassword(null);
+                element.getPatient().setPassword(null);
+            }
+			
 			AppointmentResponse myResponse = new AppointmentResponse();
             myResponse.setSuccess(true);
             myResponse.setAppointments(appointments);
@@ -844,6 +852,10 @@ public class AdminController {
 	public ResponseEntity<?> getAppointmentById(@PathVariable("id") Long id) {
 		try {
 			Appointment appointment = this.appointmentService.findById(id);
+			
+			appointment.getDoctor().setPassword(null);
+			appointment.getPatient().setPassword(null);
+			
 			AppointmentResponse myResponse = new AppointmentResponse();
 			myResponse.setSuccess(true);
 			myResponse.setAppointment(appointment);
@@ -871,6 +883,10 @@ public class AdminController {
 			}
 			
 			appointment = this.appointmentService.createAppointment(appointment);
+			
+			appointment.getDoctor().setPassword(null);
+			appointment.getPatient().setPassword(null);
+			
 			AppointmentResponse myResponse = new AppointmentResponse();
 			myResponse.setSuccess(true);
 			myResponse.setAppointment(appointment);
@@ -907,6 +923,10 @@ public class AdminController {
 			}
 			
 			appointment = this.appointmentService.updateAppointment(appointment);
+			
+			appointment.getDoctor().setPassword(null);
+			appointment.getPatient().setPassword(null);
+			
 			AppointmentResponse myResponse = new AppointmentResponse();
 			myResponse.setSuccess(true);
 			myResponse.setAppointment(appointment);

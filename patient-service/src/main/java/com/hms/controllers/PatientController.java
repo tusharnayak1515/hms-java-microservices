@@ -1,6 +1,5 @@
 package com.hms.controllers;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +41,7 @@ import com.hms.utils.JwtUtil;
 
 @RestController
 @Scope(value = "request")
-public class DoctorController {
+public class PatientController {
 	
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
@@ -60,26 +58,27 @@ public class DoctorController {
 	@Autowired
     private JwtUtil jwtUtil;
 	
-	private Logger log = LoggerFactory.getLogger(DoctorController.class);
+	private Logger log = LoggerFactory.getLogger(PatientController.class);
 	
 	@PostMapping(value = "/register", produces = "application/json")
-	public ResponseEntity<?> applyJob(@RequestBody User doctor) throws Exception {
+	public ResponseEntity<?> patientRegister(@RequestBody User patient) throws Exception {
 		try {
-			log.debug("In doctor-service doctor register with data: "+doctor);
-			User isUser1 = customUserDetailsService.findByMobile(doctor.getMobile());
+			log.debug("In patient-service patient register with data: "+patient);
+			User isUser1 = customUserDetailsService.findByMobile(patient.getMobile());
+			User isUser2 = customUserDetailsService.findByUsername(patient.getUsername());
 			
-			if(isUser1 != null) {
+			if(isUser1 != null && isUser2 != null) {
 				JwtResponse myResponse = new JwtResponse();
 	            myResponse.setSuccess(false);
 	            myResponse.setError("User already exists");
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
-			doctor.setRole("doctor");
-			doctor.setStatus("pending");
-			doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
-			doctor = customUserDetailsService.createUser(doctor);
-			log.debug("In doctor-service doctor register with doctor data: "+doctor);
+			patient.setRole("patient");
+			patient.setStatus("pending");
+			patient.setPassword(passwordEncoder.encode(patient.getPassword()));
+			patient = customUserDetailsService.createUser(patient);
+			log.debug("In patient-service patient register with patient data: "+patient);
 			JwtResponse myResponse = new JwtResponse();
             myResponse.setSuccess(true);
             return ResponseEntity.status(HttpStatus.OK).body(myResponse);
@@ -93,9 +92,9 @@ public class DoctorController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> doctorLogin(@RequestBody LoginRequest request, HttpServletResponse response) throws Exception {
+	public ResponseEntity<?> patientLogin(@RequestBody LoginRequest request, HttpServletResponse response) throws Exception {
 		try {
-			log.debug("In doctor-service doctor login with mobile: "+request.getMobile());
+			log.debug("In patient-service patient login with mobile: "+request.getMobile());
 			String mobileRegex = "^[0-9]{10}$";
 	        Pattern mobilePattern = Pattern.compile(mobileRegex);
 	        Matcher mobileMatcher = mobilePattern.matcher(request.getMobile());
@@ -145,7 +144,7 @@ public class DoctorController {
 	        myResponse.setSuccess(true);
 	        myResponse.setUser(user);
 	        myResponse.setToken(token);
-	        log.debug("In doctor-service doctor login with doctor data: "+user);
+	        log.debug("In patient-service patient login with patient data: "+user);
 	        return ResponseEntity.status(HttpStatus.OK).body(myResponse);
 		} 
 		catch (Exception e) {
@@ -238,7 +237,7 @@ public class DoctorController {
 			myResponse.setSuccess(true);
 			myResponse.setUser(user);
 			myResponse.setToken(token);
-			log.debug("In doctor-service update profile with user data: "+user);
+			log.debug("In patient-service update profile with user data: "+user);
 			return ResponseEntity.status(HttpStatus.OK).body(myResponse);			
 		} catch (Exception e) {
 			JwtResponse myResponse = new JwtResponse();
@@ -248,72 +247,6 @@ public class DoctorController {
 		}
     }
 	
-	@GetMapping("/patients")
-	public ResponseEntity<?> getMyPatients(HttpServletRequest request) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			String mobile = authentication.getName();
-			User user = this.customUserDetailsService.findByMobile(mobile);
-			
-			List<Appointment> appointments = this.appointmentService.findByDoctor(user);
-			
-			List<User> patients = new ArrayList<User>();
-			
-			Iterator<Appointment> iterator = appointments.iterator();
-			while (iterator.hasNext()) {
-				Appointment element = iterator.next();
-				if(!element.getAppointmentStatus().equalsIgnoreCase("discharged") && !element.getAppointmentStatus().equalsIgnoreCase("pending")) {
-					User patient = element.getPatient();
-					patient.setPassword(null);
-					patients.add(patient);					
-				}
-            }
-			
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(true);
-			myResponse.setUsers(patients);
-			return ResponseEntity.status(HttpStatus.OK).body(myResponse);
-		} catch (Exception e) {
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(false);
-			myResponse.setError(e.toString());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
-		}
-	}
-	
-	@GetMapping("/patients/discharged")
-	public ResponseEntity<?> getMyDischargedPatients(HttpServletRequest request) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			String mobile = authentication.getName();
-			User user = this.customUserDetailsService.findByMobile(mobile);
-			
-			List<Appointment> appointments = this.appointmentService.findByDoctor(user);
-			
-			List<User> patients = new ArrayList<User>();
-			
-			Iterator<Appointment> iterator = appointments.iterator();
-			while (iterator.hasNext()) {
-				Appointment element = iterator.next();
-				if(element.getAppointmentStatus().equalsIgnoreCase("discharged")) {
-					User patient = element.getPatient();
-					patient.setPassword(null);
-					patients.add(patient);					
-				}
-			}
-			
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(true);
-			myResponse.setUsers(patients);
-			return ResponseEntity.status(HttpStatus.OK).body(myResponse);
-		} catch (Exception e) {
-			JwtResponse myResponse = new JwtResponse();
-			myResponse.setSuccess(false);
-			myResponse.setError(e.toString());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
-		}
-	}
-	
 	@GetMapping("/appointments")
 	public ResponseEntity<?> getMyAppointments(HttpServletRequest request) {
 		try {
@@ -321,7 +254,7 @@ public class DoctorController {
 			String mobile = authentication.getName();
 			User user = this.customUserDetailsService.findByMobile(mobile);
 			
-			List<Appointment> appointments = this.appointmentService.findByDoctor(user);
+			List<Appointment> appointments = this.appointmentService.findByPatient(user);
 			
 			Iterator<Appointment> iterator = appointments.iterator();
 			while (iterator.hasNext()) {
@@ -342,32 +275,31 @@ public class DoctorController {
 		}
 	}
 	
-	@PutMapping("/appointments")
-	public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment) {
+	@GetMapping("/appointments/{id}")
+	public ResponseEntity<?> getAppointmentById(@PathVariable("id") Long id) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String mobile = authentication.getName();
 			User user = this.customUserDetailsService.findByMobile(mobile);
 			
-			if(!user.getRole().equals("doctor")) {
+			Appointment appointment = this.appointmentService.findById(id);
+			
+			if(appointment == null) {
 				AppointmentResponse myResponse = new AppointmentResponse();
-	            myResponse.setSuccess(false);
-	            myResponse.setError("Not Allowed");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+				myResponse.setSuccess(true);
+				myResponse.setAppointment(appointment);
+				return ResponseEntity.status(HttpStatus.OK).body(myResponse);
 			}
 			
-			Appointment isAppointment = this.appointmentService.findById(appointment.getAppointmentId());
-			if(isAppointment == null) {
+			if(appointment.getPatient().getUserId() != user.getUserId()) {
 				AppointmentResponse myResponse = new AppointmentResponse();
 				myResponse.setSuccess(false);
-				myResponse.setError("Appointment not found");
+				myResponse.setError("Not allowed");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
-			appointment = this.appointmentService.updateAppointment(appointment);
-			
-			appointment.getDoctor().setPassword(null);
 			appointment.getPatient().setPassword(null);
+			appointment.getDoctor().setPassword(null);
 			
 			AppointmentResponse myResponse = new AppointmentResponse();
 			myResponse.setSuccess(true);
@@ -381,41 +313,76 @@ public class DoctorController {
 		}
 	}
 	
-	@DeleteMapping("/appointments/{id}")
-	public ResponseEntity<?> deleteAppointment(@PathVariable("id") Long id) {
+	@PostMapping("/appointments")
+	public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String mobile = authentication.getName();
+			User user = this.customUserDetailsService.findByMobile(mobile);
+			appointment.setPatient(user);
+			appointment.setAppointmentStatus("pending");
+			appointment.setDoctorFee(0L);
+			appointment.setMedicineCost(0L);
+			appointment.setOtherCharges(0L);
+			appointment = this.appointmentService.createAppointment(appointment);
+			
+			appointment.getPatient().setPassword(null);
+			appointment.getDoctor().setPassword(null);
+			user.setPassword(null);
+			
+			AppointmentResponse myResponse = new AppointmentResponse();
+			myResponse.setSuccess(true);
+			myResponse.setAppointment(appointment);
+			return ResponseEntity.status(HttpStatus.OK).body(myResponse);
+		} catch (Exception e) {
+			AppointmentResponse myResponse = new AppointmentResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.toString());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+	
+	@GetMapping("/doctors/{id}")
+	public ResponseEntity<?> getDoctorById(@PathVariable("id") Long id) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String mobile = authentication.getName();
 			User user = this.customUserDetailsService.findByMobile(mobile);
 			
-			if(!user.getRole().equals("doctor")) {
-				AppointmentResponse myResponse = new AppointmentResponse();
-	            myResponse.setSuccess(false);
-	            myResponse.setError("Not Allowed");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			User doctor = this.customUserDetailsService.findById(id);
+			
+			if(doctor == null) {
+				JwtResponse myResponse = new JwtResponse();
+				myResponse.setSuccess(true);
+				myResponse.setUser(doctor);
+				return ResponseEntity.status(HttpStatus.OK).body(myResponse);
 			}
 			
-			Appointment appointment = this.appointmentService.findById(id);
-			if(appointment == null) {
-				AppointmentResponse myResponse = new AppointmentResponse();
+			List<Appointment> appointments = this.appointmentService.findByPatient(user);
+			Iterator<Appointment> iterator = appointments.iterator();
+			boolean found = false;
+			while (iterator.hasNext()) {
+				Appointment element = iterator.next();
+                if(element.getDoctor().getUserId() == doctor.getUserId()) {
+                	found = true;
+                	break;
+                }
+            }
+			
+			if(found == false) {
+				JwtResponse myResponse = new JwtResponse();
 				myResponse.setSuccess(false);
-				myResponse.setError("Appointment not found");
+				myResponse.setError("Not allowed");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 			}
 			
-			if(appointment.getDoctor().getUserId() != user.getUserId()) {
-				AppointmentResponse myResponse = new AppointmentResponse();
-				myResponse.setSuccess(false);
-				myResponse.setError("Not Allowed");
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
-			}
-			
-			this.appointmentService.deleteAppointment(id);
-			AppointmentResponse myResponse = new AppointmentResponse();
+			doctor.setPassword(null);				
+			JwtResponse myResponse = new JwtResponse();
 			myResponse.setSuccess(true);
+			myResponse.setUser(doctor);
 			return ResponseEntity.status(HttpStatus.OK).body(myResponse);
 		} catch (Exception e) {
-			AppointmentResponse myResponse = new AppointmentResponse();
+			JwtResponse myResponse = new JwtResponse();
 			myResponse.setSuccess(false);
 			myResponse.setError(e.toString());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
