@@ -749,7 +749,7 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@PostMapping("/pateints")
+	@PostMapping("/patients")
 	public ResponseEntity<?> registerPatient(@RequestBody User patient, HttpServletRequest httpRequest)
 			throws Exception {
 		try {
@@ -805,7 +805,7 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@GetMapping("/pateints")
+	@GetMapping("/patients")
 	public ResponseEntity<?> getAllPatients(HttpServletRequest httpRequest) throws Exception {
 		try {
 			log.debug("In get all patients");
@@ -860,7 +860,7 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@GetMapping("/pateints/{id}")
+	@GetMapping("/patients/{id}")
 	public ResponseEntity<?> getPatientById(@PathVariable("id") Long id, HttpServletRequest httpRequest)
 			throws Exception {
 		try {
@@ -916,7 +916,7 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@PutMapping("/pateints")
+	@PutMapping("/patients")
 	public ResponseEntity<?> updatePatient(@RequestBody User patient, HttpServletRequest httpRequest) throws Exception {
 		try {
 			log.debug("In update patient with data: " + patient);
@@ -971,7 +971,7 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	@DeleteMapping("/pateints/{id}")
+	@DeleteMapping("/patients/{id}")
 	public ResponseEntity<?> deletePatient(@PathVariable("id") Long id, HttpServletRequest httpRequest)
 			throws Exception {
 		try {

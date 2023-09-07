@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hms.models.Appointment;
+import com.hms.models.User;
 import com.hms.repositories.AppointmentRepo;
 
 @Service
@@ -17,6 +18,14 @@ public class AppointmentService {
 	
 	public List<Appointment> findAll() {
 		return this.appointmentRepo.findAll();
+	}
+	
+	public List<Appointment> findByPatient(User patient) {
+		return this.appointmentRepo.findBypatient(patient);
+	}
+	
+	public List<Appointment> findByDoctor(User doctor) {
+		return this.appointmentRepo.findBydoctor(doctor);
 	}
 	
 	public Appointment findById(Long id) {

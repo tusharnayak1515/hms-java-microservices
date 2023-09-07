@@ -205,7 +205,8 @@ public class AdminController {
 			}
 			
 			User u1 = this.customUserDetailsService.findByMobile(request.getMobile());
-			if (u1 != null && user.getUserId() != u1.getUserId()) {
+			User u2 = this.customUserDetailsService.findByUsername(request.getUsername());
+			if (u1 != null && u2 != null && user.getUserId() != u1.getUserId() && user.getUserId() != u2.getUserId()) {
 				JwtResponse myresponse = new JwtResponse();
 				myresponse.setSuccess(false);
 				myresponse.setError("This mobile is already taken");
@@ -589,7 +590,8 @@ public class AdminController {
 			}
 			
 			isDoctor = this.customUserDetailsService.findByMobile(doctor.getMobile());
-			if (isDoctor != null && doctor.getUserId() != isDoctor.getUserId()) {
+			User isDoctor2 = this.customUserDetailsService.findByUsername(doctor.getUsername());
+			if (isDoctor != null && isDoctor2 != null && doctor.getUserId() != isDoctor.getUserId() && doctor.getUserId() != isDoctor2.getUserId()) {
 				JwtResponse myresponse = new JwtResponse();
 				myresponse.setSuccess(false);
 				myresponse.setError("This mobile is already taken");
@@ -792,7 +794,8 @@ public class AdminController {
 			}
 			
 			isPatient = this.customUserDetailsService.findByMobile(patient.getMobile());
-			if (isPatient != null && patient.getUserId() != isPatient.getUserId()) {
+			User isPatient2 = this.customUserDetailsService.findByUsername(patient.getUsername());
+			if (isPatient != null && isPatient2 != null && patient.getUserId() != isPatient.getUserId() && patient.getUserId() != isPatient2.getUserId()) {
 				JwtResponse myresponse = new JwtResponse();
 				myresponse.setSuccess(false);
 				myresponse.setError("This mobile is already taken");
