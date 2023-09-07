@@ -48,6 +48,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
     
+    @Column(name = "status", nullable = false)
+    private String status;
+    
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
@@ -73,9 +76,9 @@ public class User {
     public User() {
     	super();
     }
-    
-    public User(long userId, String username, String mobile, String address, String dp, String password, String role,
-			Department department, List<Appointment> patientAppointments, List<Appointment> doctorAppointments) {
+
+	public User(long userId, String username, String mobile, String address, String dp, String password, String role,
+			String status, Department department) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -84,9 +87,8 @@ public class User {
 		this.dp = dp;
 		this.password = password;
 		this.role = role;
+		this.status = status;
 		this.department = department;
-		this.patientAppointments = patientAppointments;
-		this.doctorAppointments = doctorAppointments;
 	}
 
 	public long getUserId() {
@@ -161,12 +163,27 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", mobile=" + mobile + ", address=" + address
-				+ ", dp=" + dp + ", password=" + password + ", role=" + role + ", department=" + department
-				+ ", patientAppointments=" + patientAppointments + ", doctorAppointments=" + doctorAppointments
-				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", dp=" + dp + ", password=" + password + ", role=" + role + ", status=" + status + ", department="
+				+ department + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
     
 } 

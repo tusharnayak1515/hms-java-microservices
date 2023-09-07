@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.hms.dto.AppointmentResponse;
 import com.hms.dto.DepartmentResponse;
 import com.hms.dto.JwtResponse;
 import com.hms.dto.LoginRequest;
+import com.hms.models.Appointment;
 import com.hms.models.Department;
 import com.hms.models.User;
 
@@ -25,7 +27,7 @@ public interface AdminServiceProxy {
 	@PostMapping(value = "/register")
 	@Retry(name = "admin-service")
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "adminRegisterFallback")
-	public ResponseEntity<?> adminRegister(@RequestBody User admin) throws Exception;
+	public ResponseEntity<JwtResponse> adminRegister(@RequestBody User admin) throws Exception;
 
 	@PostMapping(value = "/login")
 	@Retry(name = "admin-service")
@@ -67,8 +69,78 @@ public interface AdminServiceProxy {
 	@CircuitBreaker(name = "admin-service", fallbackMethod = "deleteDepartmentFallback")
 	public ResponseEntity<DepartmentResponse> deleteDepartment(@PathVariable Long id, @RequestHeader("Authorization") String token) ;
 
+	@PostMapping(value = "/doctors")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "registerDoctorFallback")
+	public ResponseEntity<JwtResponse> registerDoctor(@RequestBody User doctor, @RequestHeader("Authorization") String token);
+
+	@GetMapping(value = "/doctors")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAllDoctorsFallback")
+	public ResponseEntity<JwtResponse> getAllDoctors(@RequestHeader("Authorization") String token);
+
+	@GetMapping(value = "/doctors/{id}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getDoctorByIdFallback")
+	public ResponseEntity<JwtResponse> getDoctorById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
+
+	@PutMapping(value = "/doctors")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "updateDoctorFallback")
+	public ResponseEntity<JwtResponse> updateDoctor(@RequestBody User doctor, @RequestHeader("Authorization") String token);
+
+	@DeleteMapping(value = "/doctors/{id}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "deleteDoctorFallback")
+	public ResponseEntity<JwtResponse> deleteDoctor(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
+
+	@PostMapping(value = "/patients")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "registerPatientFallback")
+	public ResponseEntity<JwtResponse> registerPatient(@RequestBody User patient, @RequestHeader("Authorization") String token);
+
+	@GetMapping(value = "/patients")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAllPatientsFallback")
+	public ResponseEntity<JwtResponse> getAllPatients(@RequestHeader("Authorization") String token);
+
+	@GetMapping(value = "/patients/{id}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getPatientByIdFallback")
+	public ResponseEntity<JwtResponse> getPatientById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
+
+	@PutMapping(value = "/patients")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "updatePatientFallback")
+	public ResponseEntity<JwtResponse> updatePatient(@RequestBody User patient, @RequestHeader("Authorization") String token);
+
+	@DeleteMapping(value = "/patients/{id}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "deletePatientFallback")
+	public ResponseEntity<JwtResponse> deletePatient(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
+
+	@GetMapping(value = "/appointments")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAllAppointmentsFallback")
+	public ResponseEntity<AppointmentResponse> getAllAppointments(@RequestHeader("Authorization") String token);
+	
+	@GetMapping(value = "/appointments/{id}")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "getAppointmentByIdFallback")
+	public ResponseEntity<AppointmentResponse> getAppointmentById(@PathVariable("id") Long id, @RequestHeader("Authorization") String token);
+	
+	@PostMapping(value = "/appointments")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "createAppointmentFallback")
+	public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment, @RequestHeader("Authorization") String token);
+	
+	@PutMapping(value = "/appointments")
+	@Retry(name = "admin-service")
+	@CircuitBreaker(name = "admin-service", fallbackMethod = "updateAppointmentFallback")
+	public ResponseEntity<AppointmentResponse> updateAppointment(@RequestBody Appointment appointment, @RequestHeader("Authorization") String token);
+
 	// Fallback methods
-	public default ResponseEntity<?> adminRegisterFallback(User admin, Exception ex) {
+	public default ResponseEntity<JwtResponse> adminRegisterFallback(User admin, Exception ex) {
 		System.out.println("admin: "+admin.getMobile());
 		System.out.println("--------- error message: "+ex.toString());
 		JwtResponse myResponse = new JwtResponse();
@@ -131,6 +203,118 @@ public interface AdminServiceProxy {
 	public default ResponseEntity<DepartmentResponse> deleteDepartmentFallback(Exception ex) {
 		System.out.println("execption in delete department fallback: "+ex);
 		DepartmentResponse myResponse = new DepartmentResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> registerDoctorFallback(Exception ex) {
+		System.out.println("exception in register doctor fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> getAllDoctorsFallback(Exception ex) {
+		System.out.println("exception in get all doctors fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> getDoctorByIdFallback(Exception ex) {
+		System.out.println("exception in get doctor by id fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> updateDoctorFallback(Exception ex) {
+		System.out.println("exception in update doctor fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> deleteDoctorFallback(Exception ex) {
+		System.out.println("exception in delete doctor fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> registerPatientFallback(Exception ex) {
+		System.out.println("exception in register patient fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> getAllPatientsFallback(Exception ex) {
+		System.out.println("exception in get all patients fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> getPatientByIdFallback(Exception ex) {
+		System.out.println("exception in get patient by id fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> updatePatientFallback(Exception ex) {
+		System.out.println("exception in update patient fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<JwtResponse> deletePatientFallback(Exception ex) {
+		System.out.println("exception in delete patient fallback: "+ex);
+		JwtResponse myResponse = new JwtResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<AppointmentResponse> getAllAppointmentsFallback(Exception ex) {
+		System.out.println("exception in get all appointments fallback: "+ex);
+		AppointmentResponse myResponse = new AppointmentResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<AppointmentResponse> getAppointmentByIdFallback(Exception ex) {
+		System.out.println("exception in get appointment by id fallback: "+ex);
+		AppointmentResponse myResponse = new AppointmentResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<AppointmentResponse> createAppointmentFallback(Exception ex) {
+		System.out.println("exception in create appointment fallback: "+ex);
+		AppointmentResponse myResponse = new AppointmentResponse();
+		myResponse.setSuccess(false);
+		myResponse.setError(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+	}
+
+	public default ResponseEntity<AppointmentResponse> updateAppointmentFallback(Exception ex) {
+		System.out.println("exception in update appointment fallback: "+ex);
+		AppointmentResponse myResponse = new AppointmentResponse();
 		myResponse.setSuccess(false);
 		myResponse.setError(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);

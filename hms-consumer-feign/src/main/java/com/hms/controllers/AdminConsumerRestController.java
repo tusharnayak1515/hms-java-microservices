@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hms.dto.AppointmentResponse;
 import com.hms.dto.CustomErrorResponse;
 import com.hms.dto.DepartmentResponse;
 import com.hms.dto.JwtResponse;
 import com.hms.dto.LoginRequest;
+import com.hms.models.Appointment;
 import com.hms.models.Department;
 import com.hms.models.User;
 import com.hms.proxies.AdminServiceProxy;
@@ -134,7 +136,8 @@ public class AdminConsumerRestController {
 					ObjectMapper objectMapper = new ObjectMapper();
 					String errorJsonString = objectMapper.writeValueAsString(errorMessage);
 					JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
-					// JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+					// JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
+					// JwtResponse.class);
 
 					CustomErrorResponse customErrorResponse = new CustomErrorResponse();
 					customErrorResponse.setSuccess(false);
@@ -155,7 +158,8 @@ public class AdminConsumerRestController {
 	}
 
 	@PutMapping("/update-profile")
-	public ResponseEntity<?> updateProfile(@RequestBody User request, HttpServletRequest httpRequest, HttpServletResponse response) throws Exception {
+	public ResponseEntity<?> updateProfile(@RequestBody User request, HttpServletRequest httpRequest,
+			HttpServletResponse response) throws Exception {
 		try {
 			log.debug("In update profile with data: " + request);
 			Cookie[] cookies = httpRequest.getCookies();
@@ -172,7 +176,7 @@ public class AdminConsumerRestController {
 				}
 			}
 			log.debug("JWT Token: " + token);
-			ResponseEntity<JwtResponse> responseEntity = adminServiceProxy.updateProfile(request,token);
+			ResponseEntity<JwtResponse> responseEntity = adminServiceProxy.updateProfile(request, token);
 			if (responseEntity.getStatusCode().is2xxSuccessful()) {
 				JwtResponse response1 = (JwtResponse) responseEntity.getBody();
 				Cookie jwtCookie = new Cookie("authorization", response1.getToken());
@@ -347,7 +351,7 @@ public class AdminConsumerRestController {
 				}
 			}
 			log.debug("JWT Token: " + token);
-			return adminServiceProxy.getDepartmentsByName(name,token);
+			return adminServiceProxy.getDepartmentsByName(name, token);
 		} catch (Exception e) {
 			log.debug("Error: In get department by name: " + e.toString());
 			JwtResponse myResponse = new JwtResponse();
@@ -468,19 +472,786 @@ public class AdminConsumerRestController {
 		}
 	}
 
-	// private String getJwtTokenFromRequest(HttpServletRequest request) {
-	// Cookie[] cookies = request.getCookies();
-	// if (cookies != null) {
-	// for (Cookie cookie : cookies) {
-	// System.out.println(cookie.getName()+": "+cookie.getValue());
-	// // cookie.setValue(null);
-	// // cookie.setMaxAge(0);
-	// // cookie.setPath("/");
-	// if ("authorization".equalsIgnoreCase(cookie.getName())) {
-	// return cookie.getValue();
-	// }
-	// }
-	// }
-	// return null;
-	// }
+	@PostMapping("/doctors")
+	public ResponseEntity<?> registerDoctor(@RequestBody User doctor, HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In doctor register with data: " + doctor);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.registerDoctor(doctor, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In doctor register contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In doctor register toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/doctors")
+	public ResponseEntity<?> getAllDoctors(HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In get all doctors");
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getAllDoctors(token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get all doctors contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get all doctors toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/doctors/{id}")
+	public ResponseEntity<?> getDoctorById(@PathVariable("id") Long id, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In get doctor by id with id: " + id);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getDoctorById(id, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get doctor by id contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get doctor by id toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@PutMapping("/doctors")
+	public ResponseEntity<?> updateDoctor(@RequestBody User doctor, HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In update doctor with doctor: " + doctor);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.updateDoctor(doctor, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In update doctor contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In update doctor toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@DeleteMapping("/doctors/{id}")
+	public ResponseEntity<?> deleteDoctor(@PathVariable("id") Long id, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In delete doctor with id: " + id);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.deleteDoctor(id, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In delete doctor contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In delete doctor toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@PostMapping("/pateints")
+	public ResponseEntity<?> registerPatient(@RequestBody User patient, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In register patient with data: " + patient);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.registerPatient(patient, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In register patient contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In register patient toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/pateints")
+	public ResponseEntity<?> getAllPatients(HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In get all patients");
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getAllPatients(token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get all patients contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get all patients toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/pateints/{id}")
+	public ResponseEntity<?> getPatientById(@PathVariable("id") Long id, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In get patient by id with id: " + id);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getPatientById(id, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get patient by id contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get patient by id toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@PutMapping("/pateints")
+	public ResponseEntity<?> updatePatient(@RequestBody User patient, HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In update patient with data: " + patient);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.updatePatient(patient, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In update patient contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In update patient toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@DeleteMapping("/pateints/{id}")
+	public ResponseEntity<?> deletePatient(@PathVariable("id") Long id, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In delete patient with id: " + id);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.deletePatient(id, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				JwtResponse response = (JwtResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
+				JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In delete patient contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In delete patient toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/appointments")
+	public ResponseEntity<?> getAllAppointments(HttpServletRequest httpRequest) throws Exception {
+		try {
+			log.debug("In get all appointments");
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getAllAppointments(token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				AppointmentResponse response = (AppointmentResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				AppointmentResponse errorResponse = objectMapper.readValue(errorJsonString, AppointmentResponse.class);
+				AppointmentResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
+						AppointmentResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get all appointments contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get all appointments toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@GetMapping("/appointments/{id}")
+	public ResponseEntity<?> getAppointmentById(@PathVariable("id") Long id, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In get appointment with id: " + id);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.getAppointmentById(id, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				AppointmentResponse response = (AppointmentResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				AppointmentResponse errorResponse = objectMapper.readValue(errorJsonString, AppointmentResponse.class);
+				AppointmentResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
+						AppointmentResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In get appointment by id contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In get appointment by id toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@PostMapping("/appointments")
+	public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In create appointment with data: " + appointment);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.createAppointment(appointment, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				AppointmentResponse response = (AppointmentResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				AppointmentResponse errorResponse = objectMapper.readValue(errorJsonString, AppointmentResponse.class);
+				AppointmentResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
+						AppointmentResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In create appointment contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In create appointment toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
+	@PutMapping("/appointments")
+	public ResponseEntity<?> updateAppointment(@RequestBody Appointment appointment, HttpServletRequest httpRequest)
+			throws Exception {
+		try {
+			log.debug("In update appointment with data: " + appointment);
+			Cookie[] cookies = httpRequest.getCookies();
+			String token = null;
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if ("authorization".equalsIgnoreCase(cookie.getName())) {
+						// cookie.setValue(null);
+						// cookie.setMaxAge(0);
+						// cookie.setPath("/");
+						// response.addCookie(cookie);
+						token = cookie.getValue();
+					}
+				}
+			}
+			log.debug("JWT Token: " + token);
+			ResponseEntity<?> responseEntity = adminServiceProxy.updateAppointment(appointment, token);
+			if (responseEntity.getStatusCode().is2xxSuccessful()) {
+				AppointmentResponse response = (AppointmentResponse) responseEntity.getBody();
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			} else {
+				System.out.println("responseEntity.getBody(): " + responseEntity.getBody());
+				Object errorMessage = null;
+				if (responseEntity.hasBody() && responseEntity.getBody() != null) {
+					errorMessage = responseEntity.getBody();
+				} else {
+					errorMessage = "Unknown Error";
+				}
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				String errorJsonString = objectMapper.writeValueAsString(errorMessage);
+				AppointmentResponse errorResponse = objectMapper.readValue(errorJsonString, AppointmentResponse.class);
+				AppointmentResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
+						AppointmentResponse.class);
+
+				CustomErrorResponse customErrorResponse = new CustomErrorResponse();
+				customErrorResponse.setSuccess(false);
+				customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
+				System.out.println("success: " + errorResponse1.isSuccess());
+				System.out.println("error: " + errorResponse1.getError());
+				customErrorResponse.setError(errorResponse1.getError());
+
+				return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
+			}
+		} catch (FeignException e) {
+			log.debug("Error: In update appointment contentUTF8: " + e.contentUTF8());
+			log.debug("Error: In update appointment toString: " + e.toString());
+			JwtResponse myResponse = new JwtResponse();
+			myResponse.setSuccess(false);
+			myResponse.setError(e.contentUTF8());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(myResponse);
+		}
+	}
+
 }

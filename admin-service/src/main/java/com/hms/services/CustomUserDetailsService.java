@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hms.models.Department;
 import com.hms.models.User;
 import com.hms.repositories.UserRepo;
 
@@ -71,6 +72,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         	user.setMobile(userDto.getMobile());
         	user.setAddress(userDto.getAddress());
         	user.setDp(userDto.getDp());
+        	user.setStatus(userDto.getStatus());
+        	user.setDepartment(userDto.getDepartment());
         	user = this.userRepo.save(user);
         }
         return user;
@@ -82,6 +85,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     
     public boolean checkPassword(UserDetails userDetails, String password) {
         return passwordEncoder.matches(password, userDetails.getPassword());
+    }
+    
+    public User findByDepartment(Department department) {
+    	return this.userRepo.findBydepartment(department);
+    }
+    
+    public List<User> findByRole(String role) {
+    	return this.userRepo.findByrole(role);
     }
     
 }

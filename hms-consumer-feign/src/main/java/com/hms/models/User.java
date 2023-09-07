@@ -10,6 +10,7 @@ public class User {
     private String dp;
     private String password;
     private String role;
+    private String status;
     private Department department;
 	private Date createdAt;
     private Date updatedAt;
@@ -19,7 +20,7 @@ public class User {
     }
 
     public User(long userId, String username, String mobile, String address, String dp, String password, String role,
-            Department department) {
+            String status, Department department) {
         this.userId = userId;
         this.username = username;
         this.mobile = mobile;
@@ -27,6 +28,7 @@ public class User {
         this.dp = dp;
         this.password = password;
         this.role = role;
+        this.status = status;
         this.department = department;
     }
 
@@ -110,12 +112,19 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "User [userId=" + userId + ", username=" + username + ", mobile=" + mobile + ", address=" + address
-                + ", dp=" + dp + ", password=" + password + ", role=" + role + ", department=" + department
-                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+                + ", dp=" + dp + ", password=" + password + ", role=" + role + ", status=" + status + ", department="
+                + department + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
     }
-
     
 }
