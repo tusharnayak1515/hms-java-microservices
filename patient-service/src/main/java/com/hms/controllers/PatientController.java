@@ -64,6 +64,50 @@ public class PatientController {
 	public ResponseEntity<?> patientRegister(@RequestBody User patient) throws Exception {
 		try {
 			log.debug("In patient-service patient register with data: "+patient);
+			
+			if (patient.getUsername().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Username cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
+			if (patient.getMobile().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Mobile cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String mobileRegex = "^[0-9]{10}$";
+            Pattern mobilePattern = Pattern.compile(mobileRegex);
+            Matcher mobileMatcher = mobilePattern.matcher(patient.getMobile());
+
+            if (!mobileMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Invalid mobile");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            if (patient.getPassword().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Password cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+            Pattern passwordPattern = Pattern.compile(passwordRegex);
+            Matcher passwordMatcher = passwordPattern.matcher(patient.getPassword());
+
+            if (!passwordMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Enter a strong password");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
 			User isUser1 = customUserDetailsService.findByMobile(patient.getMobile());
 			User isUser2 = customUserDetailsService.findByUsername(patient.getUsername());
 			

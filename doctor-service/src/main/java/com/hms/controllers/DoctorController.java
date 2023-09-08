@@ -36,9 +36,11 @@ import com.hms.dto.AppointmentResponse;
 import com.hms.dto.JwtResponse;
 import com.hms.dto.LoginRequest;
 import com.hms.models.Appointment;
+import com.hms.models.Department;
 import com.hms.models.User;
 import com.hms.services.AppointmentService;
 import com.hms.services.CustomUserDetailsService;
+import com.hms.services.DepartmentService;
 import com.hms.utils.JwtUtil;
 
 @RestController
@@ -50,6 +52,9 @@ public class DoctorController {
 	
 	@Autowired
 	private AppointmentService appointmentService;
+	
+	@Autowired
+	private DepartmentService departmentService;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -66,6 +71,50 @@ public class DoctorController {
 	public ResponseEntity<?> applyJob(@RequestBody User doctor) throws Exception {
 		try {
 			log.debug("In doctor-service doctor register with data: "+doctor);
+			
+			if (doctor.getUsername().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Username cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
+			if (doctor.getMobile().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Mobile cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String mobileRegex = "^[0-9]{10}$";
+            Pattern mobilePattern = Pattern.compile(mobileRegex);
+            Matcher mobileMatcher = mobilePattern.matcher(doctor.getMobile());
+
+            if (!mobileMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Invalid mobile");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            if (doctor.getPassword().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Password cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+            Pattern passwordPattern = Pattern.compile(passwordRegex);
+            Matcher passwordMatcher = passwordPattern.matcher(doctor.getPassword());
+
+            if (!passwordMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Enter a strong password");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
 			User isUser1 = customUserDetailsService.findByMobile(doctor.getMobile());
 			
 			if(isUser1 != null) {
@@ -73,6 +122,14 @@ public class DoctorController {
 	            myResponse.setSuccess(false);
 	            myResponse.setError("User already exists");
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			}
+			
+			Department department = this.departmentService.findById(doctor.getDepartment().getDepartmentId());
+			if(department == null) {
+				JwtResponse myResponse = new JwtResponse();
+	            myResponse.setSuccess(false);
+	            myResponse.setError("Department not found");
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(myResponse);
 			}
 			
 			doctor.setRole("doctor");
@@ -204,6 +261,16 @@ public class DoctorController {
 				myresponse.setSuccess(false);
 				myresponse.setError("This mobile is already taken");
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myresponse);
+			}
+			
+			if(request.getDepartment() != null) {
+				Department department = this.departmentService.findById(request.getDepartment().getDepartmentId());
+				if(department == null) {
+					JwtResponse myResponse = new JwtResponse();
+					myResponse.setSuccess(false);
+					myResponse.setError("Department not found");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(myResponse);
+				}				
 			}
 			
 			user.setUsername(request.getUsername());

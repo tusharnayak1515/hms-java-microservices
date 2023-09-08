@@ -70,6 +70,49 @@ public class AdminController {
 	public ResponseEntity<?> adminRegister(@RequestBody User admin) throws Exception {
 		try {
 			log.debug("In admin-service admin register with data: "+admin);
+			if (admin.getUsername().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Username cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
+			if (admin.getMobile().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Mobile cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String mobileRegex = "^[0-9]{10}$";
+            Pattern mobilePattern = Pattern.compile(mobileRegex);
+            Matcher mobileMatcher = mobilePattern.matcher(admin.getMobile());
+
+            if (!mobileMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Invalid mobile");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            if (admin.getPassword().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Password cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+            Pattern passwordPattern = Pattern.compile(passwordRegex);
+            Matcher passwordMatcher = passwordPattern.matcher(admin.getPassword());
+
+            if (!passwordMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Enter a strong password");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
 			User isUser1 = customUserDetailsService.findByUsername(admin.getUsername());
 			User isUser2 = customUserDetailsService.findByMobile(admin.getMobile());
 			
@@ -469,6 +512,50 @@ public class AdminController {
 			}
 			
 			log.debug("In admin-service doctor register with data: "+doctor);
+			
+			if (doctor.getUsername().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Username cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
+			if (doctor.getMobile().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Mobile cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String mobileRegex = "^[0-9]{10}$";
+            Pattern mobilePattern = Pattern.compile(mobileRegex);
+            Matcher mobileMatcher = mobilePattern.matcher(doctor.getMobile());
+
+            if (!mobileMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Invalid mobile");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            if (doctor.getPassword().replaceAll("\\s+", "").length() == 0) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Password cannot be empty");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+
+            String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+            Pattern passwordPattern = Pattern.compile(passwordRegex);
+            Matcher passwordMatcher = passwordPattern.matcher(doctor.getPassword());
+
+            if (!passwordMatcher.matches()) {
+                JwtResponse myResponse = new JwtResponse();
+                myResponse.setSuccess(false);
+                myResponse.setError("Enter a strong password");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(myResponse);
+            }
+			
 			User isUser1 = customUserDetailsService.findByUsername(doctor.getUsername());
 			User isUser2 = customUserDetailsService.findByMobile(doctor.getMobile());
 			
@@ -477,6 +564,14 @@ public class AdminController {
 	            myResponse.setSuccess(false);
 	            myResponse.setError("User already exists");
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			}
+			
+			Department department = this.departmentService.findById(doctor.getDepartment().getDepartmentId());
+			if(department == null) {
+				JwtResponse myResponse = new JwtResponse();
+				myResponse.setSuccess(false);
+				myResponse.setError("Department not found");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(myResponse);
 			}
 			
 			doctor.setRole("doctor");
