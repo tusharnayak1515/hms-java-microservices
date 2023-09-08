@@ -18,6 +18,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="departments")
 @EntityListeners(AuditingEntityListener.class)
@@ -31,6 +33,7 @@ public class Department {
 	@Column(name = "department_name", nullable = false, unique = true)
 	private String departmentName;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     private List<User> users;
 	

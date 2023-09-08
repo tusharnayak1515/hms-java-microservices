@@ -43,6 +43,11 @@ public class AppointmentService {
 		if (optionalAppointment.isPresent()) {
 			Appointment appointment = optionalAppointment.get();
 			appointment.setAdmitted(updatedAppointment.isAdmitted());
+			appointment.setDaysSpent(updatedAppointment.getDaysSpent());
+			appointment.setRoomCharge(updatedAppointment.getRoomCharge());
+			appointment.setDoctorFee(updatedAppointment.getDoctorFee());
+			appointment.setMedicineCost(updatedAppointment.getMedicineCost());
+			appointment.setOtherCharges(updatedAppointment.getOtherCharges());
 			appointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
             return this.appointmentRepo.save(appointment);
         } 

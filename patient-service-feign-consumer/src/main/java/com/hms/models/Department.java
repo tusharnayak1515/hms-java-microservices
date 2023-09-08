@@ -5,7 +5,6 @@ import java.util.*;
 public class Department {
     private long departmentId;
 	private String departmentName;
-    private List<User> users;
 	private Date createdAt;
     private Date updatedAt;
 
@@ -13,10 +12,9 @@ public class Department {
         
     }
 
-    public Department(long departmentId, String departmentName, List<User> users) {
+    public Department(long departmentId, String departmentName) {
         this.departmentId = departmentId;
         this.departmentName = departmentName;
-        this.users = users;
     }
 
     public long getDepartmentId() {
@@ -35,14 +33,6 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -59,11 +49,10 @@ public class Department {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Department [departmentId=" + departmentId + ", departmentName=" + departmentName + ", users=" + users
-                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
-    }
-
+	@Override
+	public String toString() {
+		return "Department [departmentId=" + departmentId + ", departmentName=" + departmentName + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + "]";
+	}
     
 }
