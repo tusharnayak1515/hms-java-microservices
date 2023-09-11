@@ -1,0 +1,1116 @@
+{
+    "info": {
+        "_postman_id": "57864fef-db1b-466b-9ac0-c2a7786fc6a3",
+        "name": "hms",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "admin",
+            "item": [
+                {
+                    "name": "doctor",
+                    "item": [
+                        {
+                            "name": "register doctor",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors",
+                                    "path": [
+                                        "api",
+                                        "doctors"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Dr. Rakesh Mishra\",\n  \"mobile\": \"1597534565\",\n  \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n  \"password\": \"Test123@\",\n  \"department\": {\n    \"departmentId\": 2,\n    \"departmentName\": \"cardiology\",\n    \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n  }\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get all doctors",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors",
+                                    "path": [
+                                        "api",
+                                        "doctors"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get doctor by id",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors/6",
+                                    "path": [
+                                        "api",
+                                        "doctors",
+                                        "6"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "approve doctor",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors",
+                                    "path": [
+                                        "api",
+                                        "doctors"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"userId\": 6,\n  \"username\": \"Utsav Senapati\",\n  \"mobile\": \"1234567891\",\n  \"address\": \"H-51, A-Street, Acharya Vihar, Bhubaneswar, Odisha, 751001\",\n  \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n  \"password\": null,\n  \"role\": \"doctor\",\n  \"status\": \"approved\",\n  \"department\": {\n    \"departmentId\": 2,\n    \"departmentName\": \"cardiology\",\n    \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n  }\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "reject doctor",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors",
+                                    "path": [
+                                        "api",
+                                        "doctors"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"userId\": 2,\n  \"username\": \"Dr. Avinash Mishra\",\n  \"mobile\": \"1597534564\",\n  \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n  \"role\": \"doctor\",\n  \"status\": \"rejected\",\n  \"department\": {\n    \"departmentId\": 2,\n    \"departmentName\": \"cardiology\",\n    \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n  }\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete doctor",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors/3",
+                                    "path": [
+                                        "api",
+                                        "doctors",
+                                        "3"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update doctor",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/doctors",
+                                    "path": [
+                                        "api",
+                                        "doctors"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"userId\": 2,\n  \"username\": \"Dr. Avinash Mishra\",\n  \"mobile\": \"1597534564\",\n  \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n  \"role\": \"doctor\",\n  \"status\": \"approved\",\n  \"department\": {\n    \"departmentId\": 2,\n    \"departmentName\": \"cardiology\",\n    \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n  }\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "department",
+                    "item": [
+                        {
+                            "name": "get all departments",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/department",
+                                    "path": [
+                                        "api",
+                                        "department"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get department by ID",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/department/1",
+                                    "path": [
+                                        "api",
+                                        "department",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "create department",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9999/api/department",
+                                    "path": [
+                                        "api",
+                                        "department"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"departmentName\": \"dummy\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update department",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/department",
+                                    "path": [
+                                        "api",
+                                        "department"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"departmentId\": 1,\n  \"departmentName\": \"neurology\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete department",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "localhost:9999/api/department/3",
+                                    "path": [
+                                        "api",
+                                        "department",
+                                        "3"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get department by name",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/department/name/cardiology",
+                                    "path": [
+                                        "api",
+                                        "department",
+                                        "name",
+                                        "cardiology"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "auth",
+                    "item": [
+                        {
+                            "name": "register",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9999/api/register",
+                                    "path": [
+                                        "api",
+                                        "register"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Apollo Admin\",\n  \"mobile\": \"1478963250\",\n  \"address\": \"Appolo Hospital, Jaydev Vihar, Bhubaneswar, Odisha, 751001\",\n  \"password\": \"Test123@\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "login",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9999/api/login",
+                                    "path": [
+                                        "api",
+                                        "login"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"mobile\": \"1478963250\",\n  \"password\": \"Test123@\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update profile",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/update-profile",
+                                    "path": [
+                                        "api",
+                                        "update-profile"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Apollo Admin\",\n  \"mobile\": \"1478963250\",\n  \"address\": \"Appolo Hospital, Jaydev Vihar, Bhubaneswar, Odisha, 751001\",\n  \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\"\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "appointment",
+                    "item": [
+                        {
+                            "name": "create appointment",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments",
+                                    "path": [
+                                        "api",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"doctor\": {\n    \"userId\": 4,\n    \"username\": \"Doctor ABC\",\n    \"mobile\": \"1597534563\",\n    \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n    \"dp\": null,\n    \"password\": null,\n    \"role\": \"doctor\",\n    \"status\": \"rejected\",\n    \"department\": {\n      \"departmentId\": 1,\n      \"departmentName\": \"cardiology\",\n      \"users\": null,\n      \"createdAt\": \"2023-09-07T09:15:46.000+00:00\",\n      \"updatedAt\": \"2023-09-07T09:15:46.000+00:00\"\n    },\n    \"createdAt\": \"2023-09-07T09:18:28.000+00:00\",\n    \"updatedAt\": \"2023-09-07T09:33:25.000+00:00\"\n  },\n  \"patient\": {\n    \"userId\": 6,\n    \"username\": \"Patient AB\",\n    \"mobile\": \"1234567890\",\n    \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n    \"dp\": null,\n    \"password\": null,\n    \"role\": \"patient\",\n    \"status\": \"approved\",\n    \"department\": null,\n    \"createdAt\": \"2023-09-07T09:57:11.000+00:00\",\n    \"updatedAt\": \"2023-09-07T10:05:55.000+00:00\"\n  },\n  \"admitted\": true,\n  \"appointmentStatus\": \"approved\",\n  \"diseasesAndSymptoms\": [\n    \"headache\",\n    \"stomachache\",\n    \"fever\"\n    ],\n  \"daysSpent\": 1,\n  \"roomCharge\": 500,\n  \"doctorFee\": 1000,\n  \"medicineCost\": 699,\n  \"otherCharges\": 0\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get all appointments",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments",
+                                    "path": [
+                                        "api",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get appointment by id",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments/1",
+                                    "path": [
+                                        "api",
+                                        "appointments",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update appointment",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments",
+                                    "path": [
+                                        "api",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"appointmentId\": 1,\n    \"patient\": {\n      \"userId\": 4,\n      \"username\": \"Aman Kumar\",\n      \"mobile\": \"7418529630\",\n      \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n      \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n      \"password\": null,\n      \"role\": \"patient\",\n      \"status\": \"approved\",\n      \"department\": null,\n      \"createdAt\": \"2023-09-08T14:01:48.000+00:00\",\n      \"updatedAt\": \"2023-09-08T14:09:47.000+00:00\"\n    },\n    \"doctor\": {\n      \"userId\": 2,\n      \"username\": \"Dr. Avinash Mishra\",\n      \"mobile\": \"1597534564\",\n      \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n      \"dp\": null,\n      \"password\": null,\n      \"role\": \"doctor\",\n      \"status\": \"approved\",\n      \"department\": {\n        \"departmentId\": 1,\n        \"departmentName\": \"neurology\",\n        \"createdAt\": \"2023-09-08T13:41:56.000+00:00\",\n        \"updatedAt\": \"2023-09-08T13:58:50.000+00:00\"\n      },\n      \"createdAt\": \"2023-09-08T13:51:13.000+00:00\",\n      \"updatedAt\": \"2023-09-08T13:59:12.000+00:00\"\n    },\n    \"appointmentStatus\": \"approved\",\n    \"diseasesAndSymptoms\": [\n      \"chest pain\",\n      \"fever\",\n      \"stomach pain\"\n    ],\n    \"daysSpent\": null,\n    \"roomCharge\": null,\n    \"doctorFee\": 500,\n    \"medicineCost\": 699,\n    \"otherCharges\": 0,\n    \"createdAt\": \"2023-09-08T14:05:19.000+00:00\",\n    \"updatedAt\": \"2023-09-08T14:14:10.000+00:00\",\n    \"admitted\": false\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "discharge patient",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments",
+                                    "path": [
+                                        "api",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"appointmentId\": 1,\n    \"patient\": {\n      \"userId\": 4,\n      \"username\": \"Aman Kumar\",\n      \"mobile\": \"7418529630\",\n      \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n      \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n      \"password\": null,\n      \"role\": \"patient\",\n      \"status\": \"approved\",\n      \"department\": null,\n      \"createdAt\": \"2023-09-08T14:01:48.000+00:00\",\n      \"updatedAt\": \"2023-09-08T14:09:47.000+00:00\"\n    },\n    \"doctor\": {\n      \"userId\": 2,\n      \"username\": \"Dr. Avinash Mishra\",\n      \"mobile\": \"1597534564\",\n      \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n      \"dp\": null,\n      \"password\": null,\n      \"role\": \"doctor\",\n      \"status\": \"approved\",\n      \"department\": {\n        \"departmentId\": 1,\n        \"departmentName\": \"neurology\",\n        \"createdAt\": \"2023-09-08T13:41:56.000+00:00\",\n        \"updatedAt\": \"2023-09-08T13:58:50.000+00:00\"\n      },\n      \"createdAt\": \"2023-09-08T13:51:13.000+00:00\",\n      \"updatedAt\": \"2023-09-08T13:59:12.000+00:00\"\n    },\n    \"appointmentStatus\": \"discharged\",\n    \"diseasesAndSymptoms\": [\n      \"chest pain\",\n      \"fever\",\n      \"stomach pain\"\n    ],\n    \"daysSpent\": 3,\n    \"roomCharge\": 3000,\n    \"doctorFee\": 1500,\n    \"medicineCost\": 1999,\n    \"otherCharges\": 600,\n    \"createdAt\": \"2023-09-08T14:05:19.000+00:00\",\n    \"updatedAt\": \"2023-09-08T14:14:10.000+00:00\",\n    \"admitted\": false\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "admit patient",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/appointments",
+                                    "path": [
+                                        "api",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"appointmentId\": 1,\n    \"patient\": {\n      \"userId\": 4,\n      \"username\": \"Aman Kumar\",\n      \"mobile\": \"7418529630\",\n      \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n      \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n      \"password\": null,\n      \"role\": \"patient\",\n      \"status\": \"approved\",\n      \"department\": null,\n      \"createdAt\": \"2023-09-08T14:01:48.000+00:00\",\n      \"updatedAt\": \"2023-09-08T14:09:47.000+00:00\"\n    },\n    \"doctor\": {\n      \"userId\": 2,\n      \"username\": \"Dr. Avinash Mishra\",\n      \"mobile\": \"1597534564\",\n      \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n      \"dp\": null,\n      \"password\": null,\n      \"role\": \"doctor\",\n      \"status\": \"approved\",\n      \"department\": {\n        \"departmentId\": 1,\n        \"departmentName\": \"neurology\",\n        \"createdAt\": \"2023-09-08T13:41:56.000+00:00\",\n        \"updatedAt\": \"2023-09-08T13:58:50.000+00:00\"\n      },\n      \"createdAt\": \"2023-09-08T13:51:13.000+00:00\",\n      \"updatedAt\": \"2023-09-08T13:59:12.000+00:00\"\n    },\n    \"appointmentStatus\": \"admitted\",\n    \"diseasesAndSymptoms\": [\n      \"chest pain\",\n      \"fever\",\n      \"stomach pain\"\n    ],\n    \"daysSpent\": 1,\n    \"roomCharge\": 1000,\n    \"doctorFee\": 500,\n    \"medicineCost\": 699,\n    \"otherCharges\": 200,\n    \"createdAt\": \"2023-09-08T14:05:19.000+00:00\",\n    \"updatedAt\": \"2023-09-08T14:14:10.000+00:00\",\n    \"admitted\": true\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "patient",
+                    "item": [
+                        {
+                            "name": "get all patients",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/patients",
+                                    "path": [
+                                        "api",
+                                        "patients"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get patient by id",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9999/api/patients/4",
+                                    "path": [
+                                        "api",
+                                        "patients",
+                                        "4"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update patient",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9999/api/patients",
+                                    "path": [
+                                        "api",
+                                        "patients"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"userId\": 4,\n    \"username\": \"Aman Kumar\",\n    \"mobile\": \"7418529630\",\n    \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n    \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n    \"password\": null,\n    \"role\": \"patient\",\n    \"status\": \"approved\",\n    \"department\": null,\n    \"createdAt\": \"2023-09-08T14:01:48.000+00:00\",\n    \"updatedAt\": \"2023-09-08T14:03:42.000+00:00\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete patient",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "localhost:9999/api/patients/5",
+                                    "path": [
+                                        "api",
+                                        "patients",
+                                        "5"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9999"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "doctor",
+            "item": [
+                {
+                    "name": "auth",
+                    "item": [
+                        {
+                            "name": "update profile",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/update-profile",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "update-profile"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Dr. Avinash Mishra\",\n  \"mobile\": \"1597534564\",\n  \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n  \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "register",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/register",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "register"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Utsav Senapati\",\n  \"mobile\": \"1234567891\",\n  \"address\": \"H-51, A-Street, Acharya Vihar, Bhubaneswar, Odisha, 751001\",\n  \"password\": \"Test123@\",\n  \"department\": {\n    \"departmentId\": 2,\n    \"departmentName\": \"cardiology\",\n    \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n  }\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "login",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/login",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "login"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"mobile\": \"1597534564\",\n  \"password\": \"Test123@\"\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "patient",
+                    "item": [
+                        {
+                            "name": "view my patients",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/patients",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "patients"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                }
+                            }
+                        },
+                        {
+                            "name": "view my discharged patients",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/patients/discharged",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "patients",
+                                        "discharged"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "appointment",
+                    "item": [
+                        {
+                            "name": "get my appointments",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/appointments",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update appointment",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/appointments",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"appointmentId\": 1,\n      \"patient\": {\n        \"userId\": 4,\n        \"username\": \"Aman Kumar\",\n        \"mobile\": \"7418529630\",\n        \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n        \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n        \"password\": null,\n        \"role\": \"patient\",\n        \"status\": \"approved\",\n        \"department\": null,\n        \"createdAt\": \"2023-09-08T14:01:48.000+00:00\",\n        \"updatedAt\": \"2023-09-08T14:09:47.000+00:00\"\n      },\n      \"doctor\": {\n        \"userId\": 2,\n        \"username\": \"Dr. Avinash Mishra\",\n        \"mobile\": \"1597534564\",\n        \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n        \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\",\n        \"password\": null,\n        \"role\": \"doctor\",\n        \"status\": \"approved\",\n        \"department\": {\n          \"departmentId\": 1,\n          \"departmentName\": \"neurology\",\n          \"createdAt\": \"2023-09-08T13:41:56.000+00:00\",\n          \"updatedAt\": \"2023-09-08T13:58:50.000+00:00\"\n        },\n        \"createdAt\": \"2023-09-08T13:51:13.000+00:00\",\n        \"updatedAt\": \"2023-09-08T14:31:23.000+00:00\"\n      },\n      \"appointmentStatus\": \"discharged\",\n      \"diseasesAndSymptoms\": [\n        \"chest pain\",\n        \"fever\",\n        \"stomach pain\"\n      ],\n      \"daysSpent\": 3,\n      \"roomCharge\": 3000,\n      \"doctorFee\": 1500,\n      \"medicineCost\": 1999,\n      \"otherCharges\": 600,\n      \"createdAt\": \"2023-09-08T14:05:19.000+00:00\",\n      \"updatedAt\": \"2023-09-08T14:24:28.000+00:00\",\n      \"admitted\": false\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete appointment",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "localhost:9998/api/doctor/appointments/2",
+                                    "path": [
+                                        "api",
+                                        "doctor",
+                                        "appointments",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9998"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "patient",
+            "item": [
+                {
+                    "name": "auth",
+                    "item": [
+                        {
+                            "name": "register",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/register",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "register"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Ravi Kumar\",\n  \"mobile\": \"7418529632\",\n  \"address\": \"B-12, C Street, Bhubaneswar, Odisha, 751001\",\n  \"password\": \"Test123@\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "login",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/login",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "login"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"mobile\": \"7418529630\",\n  \"password\": \"Test123@\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "update profile",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/update-profile",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "update-profile"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"Aman Kumar\",\n  \"mobile\": \"7418529630\",\n  \"address\": \"T-12, A Street, Kansbahal, Rourkela, Odisha, 770034\",\n  \"dp\": \"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png\"\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "doctor",
+                    "item": [
+                        {
+                            "name": "view assigned doctor",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/doctors/2",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "doctors",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "appointment",
+                    "item": [
+                        {
+                            "name": "book appointment",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/appointments",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                },
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"doctor\": {\n    \"userId\": 2,\n    \"username\": \"Dr. Avinash Mishra\",\n    \"mobile\": \"1597534564\",\n    \"address\": \"Sahidnagar, Bhubaneswar, Odisha, 751001\",\n    \"dp\": null,\n    \"password\": null,\n    \"role\": \"doctor\",\n    \"status\": \"approved\",\n    \"department\": {\n      \"departmentId\": 2,\n      \"departmentName\": \"cardiology\",\n      \"createdAt\": \"2023-09-08T13:45:26.000+00:00\",\n      \"updatedAt\": \"2023-09-08T13:45:26.000+00:00\"\n    },\n    \"createdAt\": \"2023-09-08T13:51:13.000+00:00\",\n    \"updatedAt\": \"2023-09-08T13:59:12.000+00:00\"\n  },\n  \"diseasesAndSymptoms\": [\n    \"chest pain\",\n    \"stomach pain\",\n    \"fever\"\n  ]\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "get my appointments",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "localhost:9997/api/patient/appointments",
+                                    "path": [
+                                        "api",
+                                        "patient",
+                                        "appointments"
+                                    ],
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "9997"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -3,7 +3,6 @@ package com.hms.dto;
 import java.util.List;
 
 import com.hms.models.Appointment;
-import com.hms.models.User;
 
 public class AppointmentResponse {
 	private boolean success;
