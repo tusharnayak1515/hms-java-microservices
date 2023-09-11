@@ -148,7 +148,7 @@ public interface AdminServiceProxy {
 		System.out.println("yes----------"+ex);
 		JwtResponse myResponse = new JwtResponse();
 		myResponse.setSuccess(false);
-		myResponse.setError(ex.toString());
+		myResponse.setError("Server is down");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
 	}
 
