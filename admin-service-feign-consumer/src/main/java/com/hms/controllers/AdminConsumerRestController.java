@@ -136,13 +136,15 @@ public class AdminConsumerRestController {
 					ObjectMapper objectMapper = new ObjectMapper();
 					String errorJsonString = objectMapper.writeValueAsString(errorMessage);
 					JwtResponse errorResponse = objectMapper.readValue(errorJsonString, JwtResponse.class);
-					// JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(),
-					// JwtResponse.class);
+					JwtResponse errorResponse1 = objectMapper.readValue(errorResponse.getError(), JwtResponse.class);
 
 					CustomErrorResponse customErrorResponse = new CustomErrorResponse();
 					customErrorResponse.setSuccess(false);
 					customErrorResponse.setStatusCode(responseEntity.getStatusCodeValue());
-					customErrorResponse.setError(errorResponse.getError());
+					System.out.println("success: " + errorResponse1.isSuccess());
+					System.out.println("error: " + errorResponse1.getError());
+					customErrorResponse.setError(errorResponse1.getError());
+
 					return ResponseEntity.status(responseEntity.getStatusCodeValue()).body(customErrorResponse);
 				} else {
 					return ResponseEntity.status(responseEntity.getStatusCodeValue()).body("Unknown Error");
