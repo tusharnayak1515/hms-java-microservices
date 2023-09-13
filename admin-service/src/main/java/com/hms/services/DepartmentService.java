@@ -3,15 +3,19 @@ package com.hms.services;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.hms.models.Department;
 import com.hms.repositories.DepartmentRepo;
 
-@Service
+@Service(value = "departmentService")
+@Scope(value = "singleton")
 public class DepartmentService {
 	
 	@Autowired
+	@Qualifier("departmentRepo")
 	private DepartmentRepo departmentRepo;
 	
 	public List<Department> findAll() {

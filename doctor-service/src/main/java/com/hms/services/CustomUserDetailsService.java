@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,10 +19,12 @@ import com.hms.models.Department;
 import com.hms.models.User;
 import com.hms.repositories.UserRepo;
 
-@Service
+@Service(value = "userService")
+@Scope(value = "singleton")
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
+    @Qualifier("userRepo")
     private UserRepo userRepo;
 
     @Lazy

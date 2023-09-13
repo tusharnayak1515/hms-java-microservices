@@ -4,16 +4,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.hms.models.Appointment;
 import com.hms.models.User;
 import com.hms.repositories.AppointmentRepo;
 
-@Service
+@Service(value = "appointmentService")
+@Scope(value = "singleton")
 public class AppointmentService {
 	
 	@Autowired
+	@Qualifier("appointmentRepo")
 	private AppointmentRepo appointmentRepo;
 	
 	public List<Appointment> findAll() {
