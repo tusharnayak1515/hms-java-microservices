@@ -366,6 +366,16 @@ public class PatientController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String mobile = authentication.getName();
 			User user = this.customUserDetailsService.findByMobile(mobile);
+			
+			User doctor = this.customUserDetailsService.findById(appointment.getDoctor().getUserId());
+			
+			if(!doctor.getRole().equals("doctor")) {
+				AppointmentResponse myResponse = new AppointmentResponse();
+				myResponse.setSuccess(false);
+				myResponse.setError("Invalid doctor");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myResponse);
+			}
+			
 			appointment.setPatient(user);
 			appointment.setAppointmentStatus("pending");
 			appointment.setDoctorFee(0L);
